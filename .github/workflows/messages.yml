@@ -652,16 +652,14 @@ jobs:
           if [ "$GATEWAY" = "bankr" ]; then
             if [ -n "${BANKR_LLM_KEY:-}" ]; then
               export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
-              export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
-              unset ANTHROPIC_API_KEY
+              export ANTHROPIC_API_KEY="$BANKR_LLM_KEY"
               unset CLAUDE_CODE_OAUTH_TOKEN
               echo "::notice::Routing through Bankr Gateway"
             fi
           elif [ "$GATEWAY" = "openrouter" ]; then
             if [ -n "${OPENROUTER_API_KEY:-}" ]; then
               export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-              export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-              unset ANTHROPIC_API_KEY
+              export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
               unset CLAUDE_CODE_OAUTH_TOKEN
               echo "::notice::Routing through OpenRouter"
             fi

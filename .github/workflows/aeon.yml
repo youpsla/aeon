@@ -243,8 +243,7 @@ jobs:
               exit 1
             fi
             export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
-            export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$BANKR_LLM_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
             echo "::notice::Routing through Bankr Gateway (https://llm.bankr.bot)"
           elif [ "$GATEWAY" = "openrouter" ]; then
@@ -253,8 +252,7 @@ jobs:
               exit 1
             fi
             export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
             echo "::notice::Routing through OpenRouter (https://openrouter.ai/api/v1)"
           else
@@ -518,16 +516,14 @@ jobs:
           # Skip analysis for meta skills (they don't produce scorable output)
           case "$SKILL" in heartbeat|skill-health|skill-analytics|reflect|memory-flush|self-review|cost-report) echo "Skipping analysis for meta skill"; exit 0;; esac
 
-          # Route through gateway if configured
-          if [ "${{ steps.run.outputs.GATEWAY }}" = "bankr" ] && [ -n "${BANKR_LLM_KEY:-}" ]; then
+            # Route through gateway if configured
+            if [ "${{ steps.run.outputs.GATEWAY }}" = "bankr" ] && [ -n "${BANKR_LLM_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
-            export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$BANKR_LLM_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
           elif [ "${{ steps.run.outputs.GATEWAY }}" = "openrouter" ] && [ -n "${OPENROUTER_API_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
           fi
 
@@ -622,13 +618,11 @@ jobs:
         run: |
           if [ "${{ steps.run.outputs.GATEWAY }}" = "bankr" ] && [ -n "${BANKR_LLM_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
-            export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$BANKR_LLM_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
           elif [ "${{ steps.run.outputs.GATEWAY }}" = "openrouter" ] && [ -n "${OPENROUTER_API_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-            unset ANTHROPIC_API_KEY
+            export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
             unset CLAUDE_CODE_OAUTH_TOKEN
           fi
           for pending in dashboard/outputs/.pending-*.md; do
