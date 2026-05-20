@@ -8,7 +8,7 @@ export interface SkillConfig {
 }
 
 export interface GatewayConfig {
-  provider: 'direct' | 'bankr'
+  provider: 'direct' | 'bankr' | 'openrouter'
 }
 
 export interface AeonConfig {
@@ -48,7 +48,7 @@ export function parseConfig(raw: string): AeonConfig {
   const gatewayNode = doc.get('gateway')
   if (isMap(gatewayNode)) {
     const provider = String(getMapValue(gatewayNode, 'provider') ?? 'direct')
-    gateway = { provider: provider === 'bankr' ? 'bankr' : 'direct' }
+    gateway = { provider: provider === 'bankr' ? 'bankr' : provider === 'openrouter' ? 'openrouter' : 'direct' }
   }
 
   let jsonrenderEnabled = false
@@ -108,6 +108,18 @@ export function updateSkillInConfig(
 export function updateModelInConfig(raw: string, model: string): string {
   const doc = parseDocument(raw)
   doc.set('model', model)
+  return doc.toString()
+}
+
+/**
+ * Update gateway provider.
+ */
+export function updateGatewayInConfig(raw: string, provider: string): string {
+  const doc = parseDocument(raw)
+  const gateway = doc.get('gateway')
+  if (isMap(gateway)) {
+    gateway.set('provider', provider)
+  }
   return doc.toString()
 }
 

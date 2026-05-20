@@ -23,6 +23,7 @@ on:
           - gpt-5.2
           - kimi-k2.5
           - qwen3-coder
+          - open_router/deepseek/deepseek-v4-flash
       var:
         description: 'Variable (e.g. AI, bitcoin, owner/repo)'
         required: false
@@ -136,7 +137,7 @@ jobs:
           SECRETS=$(grep -oE '\$\{?[A-Z][A-Z0-9_]{2,}\}?' "$SKILL_FILE" 2>/dev/null | \
             sed 's/[${}]//g' | \
             grep -E '_(API_KEY|KEY|TOKEN|SECRET|WEBHOOK_URL)$' | \
-            grep -vE '^(GITHUB_TOKEN|GH_TOKEN|ANTHROPIC_API_KEY|CLAUDE_CODE_OAUTH_TOKEN|BANKR_LLM_KEY|TELEGRAM_|DISCORD_|SLACK_)' | \
+            grep -vE '^(GITHUB_TOKEN|GH_TOKEN|ANTHROPIC_API_KEY|CLAUDE_CODE_OAUTH_TOKEN|BANKR_LLM_KEY|OPENROUTER_API_KEY|TELEGRAM_|DISCORD_|SLACK_)' | \
             sort -u) || true
 
           [ -z "$SECRETS" ] && exit 0
@@ -204,6 +205,7 @@ jobs:
           COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
           BANKR_API_KEY: ${{ secrets.BANKR_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
           NEYNAR_API_KEY: ${{ secrets.NEYNAR_API_KEY }}
@@ -245,6 +247,16 @@ jobs:
             unset ANTHROPIC_API_KEY
             unset CLAUDE_CODE_OAUTH_TOKEN
             echo "::notice::Routing through Bankr Gateway (https://llm.bankr.bot)"
+          elif [ "$GATEWAY" = "openrouter" ]; then
+            if [ -z "${OPENROUTER_API_KEY:-}" ]; then
+              echo "::error::gateway.provider=openrouter but OPENROUTER_API_KEY secret is not set"
+              exit 1
+            fi
+            export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
+            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+            unset ANTHROPIC_API_KEY
+            unset CLAUDE_CODE_OAUTH_TOKEN
+            echo "::notice::Routing through OpenRouter (https://openrouter.ai/api/v1)"
           else
             echo "::notice::Using direct Anthropic API"
           fi
@@ -499,6 +511,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           BANKR_LLM_KEY: ${{ secrets.BANKR_LLM_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           SKILL="${{ steps.skill.outputs.name }}"
 
@@ -509,6 +522,11 @@ jobs:
           if [ "${{ steps.run.outputs.GATEWAY }}" = "bankr" ] && [ -n "${BANKR_LLM_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
             export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
+            unset ANTHROPIC_API_KEY
+            unset CLAUDE_CODE_OAUTH_TOKEN
+          elif [ "${{ steps.run.outputs.GATEWAY }}" = "openrouter" ] && [ -n "${OPENROUTER_API_KEY:-}" ]; then
+            export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
+            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
             unset ANTHROPIC_API_KEY
             unset CLAUDE_CODE_OAUTH_TOKEN
           fi
@@ -600,10 +618,16 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           BANKR_LLM_KEY: ${{ secrets.BANKR_LLM_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           if [ "${{ steps.run.outputs.GATEWAY }}" = "bankr" ] && [ -n "${BANKR_LLM_KEY:-}" ]; then
             export ANTHROPIC_BASE_URL="https://llm.bankr.bot"
             export ANTHROPIC_AUTH_TOKEN="$BANKR_LLM_KEY"
+            unset ANTHROPIC_API_KEY
+            unset CLAUDE_CODE_OAUTH_TOKEN
+          elif [ "${{ steps.run.outputs.GATEWAY }}" = "openrouter" ] && [ -n "${OPENROUTER_API_KEY:-}" ]; then
+            export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
+            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
             unset ANTHROPIC_API_KEY
             unset CLAUDE_CODE_OAUTH_TOKEN
           fi

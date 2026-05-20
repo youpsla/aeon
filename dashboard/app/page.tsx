@@ -24,7 +24,7 @@ export default function Dashboard() {
   const [runs, setRuns] = useState<Run[]>([])
   const [secrets, setSecrets] = useState<Secret[]>([])
   const [model, setModel] = useState('claude-sonnet-4-6')
-  const [gateway, setGateway] = useState<'direct' | 'bankr'>('direct')
+  const [gateway, setGateway] = useState<'direct' | 'bankr' | 'openrouter'>('direct')
   const [repo, setRepo] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

@@ -1,5 +1,5 @@
 import type { Skill } from '../lib/types'
-import { MODELS, BANKR_EXTRA_MODELS, DEPARTMENTS } from '../lib/constants'
+import { MODELS, BANKR_EXTRA_MODELS, OPENROUTER_EXTRA_MODELS, DEPARTMENTS } from '../lib/constants'
 import { displayName } from '../lib/utils'
 
 interface TopBarProps {
@@ -7,7 +7,7 @@ interface TopBarProps {
   view: 'hq' | 'secrets'
   repo: string
   model: string
-  gateway: 'direct' | 'bankr'
+  gateway: 'direct' | 'bankr' | 'openrouter'
   authStatus: { authenticated: boolean } | null
   authLoading: boolean
   pulling: boolean
@@ -23,7 +23,7 @@ interface TopBarProps {
 
 export function TopBar({ skill, view, repo, model, gateway, authStatus, authLoading, pulling, syncing, hasChanges, behind, onSetupAuth, onUpdateModel, onShowImport, onPull, onSync }: TopBarProps) {
   const dept = skill?.tags?.[0] ? DEPARTMENTS[skill.tags[0]] : null
-  const modelOptions = gateway === 'bankr' ? [...MODELS, ...BANKR_EXTRA_MODELS] : MODELS
+  const modelOptions = gateway === 'bankr' ? [...MODELS, ...BANKR_EXTRA_MODELS] : gateway === 'openrouter' ? [...MODELS, ...OPENROUTER_EXTRA_MODELS] : MODELS
 
   return (
     <div className="h-12 border-b-2 border-[rgba(10,10,10,0.06)] flex items-center justify-between px-5 shrink-0 bg-white">
@@ -33,6 +33,7 @@ export function TopBar({ skill, view, repo, model, gateway, authStatus, authLoad
       </div>
       <div className="flex items-center gap-2">
         {gateway === 'bankr' && <span className="text-[11px] font-mono px-2 py-0.5 bg-eva-orange/15 text-eva-orange uppercase tracking-[1px]">Bankr</span>}
+        {gateway === 'openrouter' && <span className="text-[11px] font-mono px-2 py-0.5 bg-[#6466F1]/15 text-[#6466F1] uppercase tracking-[1px]">OpenRouter</span>}
         {authStatus && !authStatus.authenticated && <button onClick={onSetupAuth} disabled={authLoading} className="bg-eva-orange text-white text-[11px] px-3 py-1.5 font-mono uppercase tracking-[1px] hover:opacity-90 transition-opacity disabled:opacity-50">{authLoading ? '...' : 'Auth'}</button>}
         <select value={model} onChange={(e) => onUpdateModel(e.target.value)} className="bg-white text-primary-70 text-[11px] px-2.5 py-1.5 border-2 border-[rgba(10,10,10,0.08)] outline-none cursor-pointer font-mono">
           {modelOptions.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}

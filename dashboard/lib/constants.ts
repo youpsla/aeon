@@ -12,6 +12,14 @@ export const BANKR_EXTRA_MODELS = [
   { id: 'qwen3-coder', label: 'Qwen3 Coder' },
 ]
 
+export const OPENROUTER_EXTRA_MODELS = [
+  { id: 'open_router/deepseek/deepseek-v4-flash', label: 'DeepSeek V4 Flash' },
+  { id: 'open_router/deepseek/deepseek-v4-pro', label: 'DeepSeek V4 Pro' },
+  { id: 'open_router/openai/o3-mini', label: 'O3 Mini' },
+  { id: 'open_router/anthropic/claude-sonnet-4-6', label: 'Sonnet 4.6 (via OR)' },
+  { id: 'open_router/google/gemini-3-flash', label: 'Gemini 3 Flash (via OR)' },
+]
+
 export const DAYS = [
   { label: 'All', value: -1 }, { label: 'Mon', value: 1 }, { label: 'Tue', value: 2 },
   { label: 'Wed', value: 3 }, { label: 'Thu', value: 4 }, { label: 'Fri', value: 5 },

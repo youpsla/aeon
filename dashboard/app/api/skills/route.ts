@@ -8,6 +8,7 @@ import {
   updateModelInConfig,
   updateJsonrenderInConfig,
   removeSkillFromConfig,
+  updateGatewayInConfig,
 } from '@/lib/config'
 import { deleteDirectory } from '@/lib/github'
 
@@ -89,12 +90,16 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
-    const { name, enabled, schedule, var: skillVar, model, skillModel, jsonrenderEnabled } = await request.json()
+    const { name, enabled, schedule, var: skillVar, model, skillModel, jsonrenderEnabled, gateway } = await request.json()
     const { content, sha } = await getFileContent('aeon.yml')
     let updated = content
 
     if (typeof jsonrenderEnabled === 'boolean') {
       updated = updateJsonrenderInConfig(updated, jsonrenderEnabled)
+    }
+
+    if (typeof gateway === 'string' && ['direct', 'bankr', 'openrouter'].includes(gateway)) {
+      updated = updateGatewayInConfig(updated, gateway)
     }
 
     if (typeof model === 'string' && model) {
@@ -115,7 +120,9 @@ export async function PATCH(request: Request) {
         ? `chore: set model to ${model}`
         : typeof jsonrenderEnabled === 'boolean'
           ? `chore: ${jsonrenderEnabled ? 'enable' : 'disable'} json-render channel`
-          : `chore: update ${name} config`
+          : typeof gateway === 'string'
+            ? `chore: set gateway to ${gateway}`
+            : `chore: update ${name} config`
       await updateFile('aeon.yml', updated, sha, msg)
     }
 

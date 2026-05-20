@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Skill, Run } from '../lib/types'
-import { MODELS, BANKR_EXTRA_MODELS, DEPARTMENTS } from '../lib/constants'
+import { MODELS, BANKR_EXTRA_MODELS, OPENROUTER_EXTRA_MODELS, DEPARTMENTS } from '../lib/constants'
 import { displayName, initials, getSkillStatus, cronLabel, statusDot, inputCls } from '../lib/utils'
 import { ScheduleEditor } from './ScheduleEditor'
 import { timeAgo } from '../lib/utils'
@@ -11,7 +11,7 @@ interface SkillDetailProps {
   skill: Skill
   runs: Run[]
   model: string
-  gateway: 'direct' | 'bankr'
+  gateway: 'direct' | 'bankr' | 'openrouter'
   busy: Record<string, boolean>
   onToggle: (name: string, enabled: boolean) => void
   onRun: (name: string, v?: string, m?: string) => void
@@ -23,7 +23,7 @@ interface SkillDetailProps {
 }
 
 export function SkillDetail({ skill, runs, model, gateway, busy, onToggle, onRun, onDelete, onUpdateSchedule, onUpdateVar, onUpdateModel, onViewRun }: SkillDetailProps) {
-  const modelOptions = gateway === 'bankr' ? [...MODELS, ...BANKR_EXTRA_MODELS] : MODELS
+  const modelOptions = gateway === 'bankr' ? [...MODELS, ...BANKR_EXTRA_MODELS] : gateway === 'openrouter' ? [...MODELS, ...OPENROUTER_EXTRA_MODELS] : MODELS
   const [editingSchedule, setEditingSchedule] = useState(false)
   const [editingVar, setEditingVar] = useState(false)
   const [varDraft, setVarDraft] = useState('')
