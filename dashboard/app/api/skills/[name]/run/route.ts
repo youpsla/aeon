@@ -25,7 +25,7 @@ export async function POST(
         skillVar = body.var.replace(/[^a-zA-Z0-9_ .\-/#@]/g, '')
       }
       if (body.model && typeof body.model === 'string') {
-        model = body.model.replace(/[^a-zA-Z0-9_\-]/g, '')
+        model = body.model.replace(/[^a-zA-Z0-9_\-/]/g, '')
       }
     } catch { /* no body is fine */ }
 
