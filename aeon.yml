@@ -213,7 +213,7 @@ model: claude-opus-4-7
 # Bankr docs: https://docs.bankr.bot/llm-gateway/overview
 # OpenRouter: https://openrouter.ai — set OPENROUTER_API_KEY secret, routes to https://openrouter.ai/api/v1
 gateway:
-  provider: direct  # direct | bankr | openrouter
+  provider: openrouter  # direct | bankr | openrouter
 
 # Output channels
 channels:
